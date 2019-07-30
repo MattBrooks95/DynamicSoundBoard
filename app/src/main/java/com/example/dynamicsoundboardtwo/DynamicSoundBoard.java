@@ -1,6 +1,7 @@
 package com.example.dynamicsoundboardtwo;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 import android.net.Uri;
@@ -18,6 +19,8 @@ public class DynamicSoundBoard extends AppCompatActivity {
 
     public Uri user_selected_media_directory_uri;
 
+    protected Context application_context = null;
+
     protected Configuration configuration    = null;
     protected DisplayManager display_manager = null;
 
@@ -25,6 +28,7 @@ public class DynamicSoundBoard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        application_context = getApplicationContext();
         setup_root_media_directory_uri();
     }
 
@@ -42,7 +46,7 @@ public class DynamicSoundBoard extends AppCompatActivity {
 
     private void setup_configuration(Uri folder_uri){
         Log.d(TAG,"setup_configuration()");
-        configuration = new Configuration(folder_uri);
+        configuration = new Configuration(folder_uri, application_context);
     }
 
     private void setup_display(Uri folder_uri){
@@ -50,7 +54,10 @@ public class DynamicSoundBoard extends AppCompatActivity {
     }
 
     private void setup_root_media_directory_uri(){
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+//        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+//        startActivityForResult(intent, GET_FOLDER_REQUEST_CODE);
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
         startActivityForResult(intent, GET_FOLDER_REQUEST_CODE);
     }
 
