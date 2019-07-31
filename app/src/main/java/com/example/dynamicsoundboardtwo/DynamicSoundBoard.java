@@ -2,7 +2,6 @@ package com.example.dynamicsoundboardtwo;
 
 import android.content.Context;
 
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,13 +12,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.example.dynamicsoundboardtwo.Constants.*;
+import static com.example.dynamicsoundboardtwo.JavaHelpers.build_map_of_directory;
+
 public class DynamicSoundBoard extends AppCompatActivity {
 
     private static final String TAG = "DynamicSoundBoard";
-
-    private static final String AUDIO_DIR_NAME = "audio";
-    private static final String IMAGE_DIR_NAME = "pics";
-    private static final String MAP_FILE_NAME  = "image_to_sound_mapping.json";
 
     protected Context application_context = null;
 
@@ -88,24 +86,6 @@ public class DynamicSoundBoard extends AppCompatActivity {
         boolean success = (!media_folders_exist || !map_file_exists);
         Log.d(TAG,"folder is valid?:" + Boolean.toString(success));
         return success;
-    }
-
-    //move outside of this class, should be a general helper
-    private HashMap<String,File> build_map_of_directory(File directory){
-        HashMap<String,File> map = new HashMap<>();
-
-        if(!directory.isDirectory()){
-            Log.d(TAG,"build_map_of_directory not given a directory!");
-            return map;
-        }
-
-        File[] file_list = directory.listFiles();
-
-        for(File file_object : file_list){
-            map.put(file_object.getName(), file_object);
-        }
-
-        return map;
     }
 
     private void setup_sound_boards(ArrayList<HashMap<String,File>> sound_board_folders){
