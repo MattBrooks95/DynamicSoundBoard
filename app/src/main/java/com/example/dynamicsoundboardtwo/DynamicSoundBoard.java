@@ -40,14 +40,14 @@ public class DynamicSoundBoard extends AppCompatActivity {
 
     private void setup(){
         test_print();
-        ArrayList<HashMap<String,File>> sound_board_folders = setup_sound_board_folders(application_context.getExternalFilesDirs(null));
+        HashMap<String,HashMap<String,File>> sound_board_folders = setup_sound_board_folders(application_context.getExternalFilesDirs(null));
         setup_sound_boards(sound_board_folders);
         setup_display();
     }
 
     //returns a list of maps from file name to file objects that can be used to instantiate sound boards
-    private ArrayList<HashMap<String,File>> setup_sound_board_folders(File[] external_storage_files) {
-        ArrayList<HashMap<String,File>> sound_board_folders = new ArrayList<>();
+    private HashMap<String,HashMap<String,File>> setup_sound_board_folders(File[] external_storage_files) {
+        HashMap<String,HashMap<String,File>> sound_board_folders = new HashMap<>();
 
         for (File external_storage_file : external_storage_files) {
             process_external_storage_location(sound_board_folders, external_storage_file);
@@ -56,23 +56,25 @@ public class DynamicSoundBoard extends AppCompatActivity {
         return sound_board_folders;
     }
 
-    private void process_external_storage_location(ArrayList<HashMap<String,File>> sound_board_folders, File external_storage_file){
+    private void process_external_storage_location(HashMap<String,HashMap<String,File>> sound_board_folders, File external_storage_file){
         Log.d(TAG,external_storage_file.getPath());
-        for(File sound_board_folder : external_storage_file.listFiles()){
-            String this_files_path = sound_board_folder.getPath();
+        for(File application_folder : external_storage_file.listFiles()){
+            String this_files_path = application_folder.getPath();
             Log.d(TAG,this_files_path);
 
-            if(!sound_board_folder.isDirectory()){
+            if(!application_folder.isDirectory()){
                 Log.d(TAG,"Skipping folder" + this_files_path + " not a directory!");
                 continue;
             }
 
-            HashMap<String,File> this_directory_map = build_map_of_directory(sound_board_folder);
-            if(!is_valid_sound_board_folder(this_directory_map)){
-                continue;
-            }
+            for(File sound_board_folder : application_folder.listFiles()){
+                HashMap<String,File> this_directory_map = build_map_of_directory(sound_board_folder);
+                if(!is_valid_sound_board_folder(this_directory_map)){
+                    continue;
+                }
 
-            sound_board_folders.add(this_directory_map);
+                sound_board_folders.put(sound_board_folder.getPath(),this_directory_map);
+            }
         }
     }
 
@@ -83,12 +85,12 @@ public class DynamicSoundBoard extends AppCompatActivity {
     private boolean is_valid_sound_board_folder(HashMap<String,File> sound_board_directory){
         boolean media_folders_exist = (sound_board_directory.get(AUDIO_DIR_NAME) != null && sound_board_directory.get(IMAGE_DIR_NAME) != null);
         boolean map_file_exists     = (sound_board_directory.get(MAP_FILE_NAME) != null);
-        boolean success = (!media_folders_exist || !map_file_exists);
+        boolean success = (media_folders_exist && map_file_exists);
         Log.d(TAG,"folder is valid?:" + Boolean.toString(success));
         return success;
     }
 
-    private void setup_sound_boards(ArrayList<HashMap<String,File>> sound_board_folders){
+    private void setup_sound_boards(HashMap<String,HashMap<String,File>> sound_board_folders){
         sound_board_manager = new SoundBoardManager(sound_board_folders);
     }
 
