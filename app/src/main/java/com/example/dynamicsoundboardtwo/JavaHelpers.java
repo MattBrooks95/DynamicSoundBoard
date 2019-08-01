@@ -2,7 +2,10 @@ package com.example.dynamicsoundboardtwo;
 
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -10,8 +13,28 @@ public class JavaHelpers {
     private static final String TAG = "JavaHelpers";
 
     //finish later!
-    public static final String get_string_from_file(File file_to_read){
-        return "";
+    public static final String get_string_from_file(File file_to_read) throws java.io.FileNotFoundException{
+        String file_path = file_to_read.getPath();
+        if(!file_to_read.canRead()){
+            Log.d(TAG, "Couldn't read file:" + file_path);
+            return null;
+        }
+
+        StringBuilder file_contents = new StringBuilder();
+
+        FileReader input      = new FileReader(file_to_read);
+        BufferedReader reader = new BufferedReader(input);
+
+        try{
+            String new_line;
+            while((new_line = reader.readLine()) != null){
+                file_contents.append(new_line);
+            }
+        } catch(java.io.IOException read_error){
+            Log.d(TAG, "File:" + file_path + " was opened but could not be read properly.");
+        }
+
+        return file_contents.toString();
     }
 
     //this needs to be recursive
@@ -42,5 +65,14 @@ public class JavaHelpers {
             }
         }
         return return_string.toString();
+    }
+
+    public boolean message_if_null(Object some_object, String message){
+        if(some_object == null) {
+            Log.d(TAG, "Null object! Message:" + message);
+            return true;
+        } else {
+            return false;
+        }
     }
 }
