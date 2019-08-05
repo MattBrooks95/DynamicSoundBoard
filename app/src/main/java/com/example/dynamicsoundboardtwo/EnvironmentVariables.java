@@ -1,12 +1,12 @@
 package com.example.dynamicsoundboardtwo;
 
 import android.content.Context;
-import android.widget.GridView;
+import android.view.View;
 
 public class EnvironmentVariables {
     private static Context application_environment = null;
-    private static GridView main_context           = null;
-    private static int main_context_id             = -1;
+    private static View main_view                  = null;
+    private static int main_view_id             = -1;
 
     public static Context get_app_context(){
         return application_environment;
@@ -16,19 +16,19 @@ public class EnvironmentVariables {
         application_environment = environment;
     }
 
-    public static void set_main_context(GridView main_context_in){
-        main_context = main_context_in;
+    public static void set_main_view(View main_view_in){
+        main_view = main_view_in;
     }
 
-    public static GridView get_main_context(){
-        return main_context;
+    public static View get_main_view(){
+        return main_view;
     }
 
-    public static void set_main_context_id(int main_context_id_in){
-        main_context_id = main_context_id_in;
+    public static void set_main_view_id(int main_context_id_in){
+        main_view_id = main_context_id_in;
     }
 
-    public static int get_main_context_id(){
-        return main_context_id;
+    public static int get_main_view_id(){
+        return main_view_id;
     }
 }

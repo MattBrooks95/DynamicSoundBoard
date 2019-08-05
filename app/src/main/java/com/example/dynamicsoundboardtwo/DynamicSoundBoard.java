@@ -6,8 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import android.view.View;
+import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.File;
@@ -21,20 +22,14 @@ public class DynamicSoundBoard extends AppCompatActivity {
 
     private static final String TAG = "DynamicSoundBoard";
 
-//    protected Context application_context = null;
-
-//    protected Configuration configuration           = null;
     protected DisplayManager display_manager        = null;
     protected SoundBoardManager sound_board_manager = null;
-    public EnvironmentVariables app_environment     = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         set_environment_variables();
-//        app_environment = new EnvironmentVariables(getApplicationContext());
-//        application_context = getApplicationContext();
         setup();
     }
 
@@ -45,17 +40,17 @@ public class DynamicSoundBoard extends AppCompatActivity {
 
     private void set_environment_variables(){
         EnvironmentVariables.set_app_context(getApplicationContext());
-        int main_grid_view_id = get_main_grid_view_id();
-        EnvironmentVariables.set_main_context_id(main_grid_view_id);
-        EnvironmentVariables.set_main_context(get_main_grid_view());
+        int main_view_id = get_main_view_id();
+        EnvironmentVariables.set_main_view_id(main_view_id);
+        EnvironmentVariables.set_main_view(get_main_grid_view());
     }
 
-    private int get_main_grid_view_id(){
+    private int get_main_view_id(){
         return R.id.main_context;
     }
 
-    private GridView get_main_grid_view(){
-        return (GridView) findViewById(get_main_grid_view_id());
+    private ViewGroup get_main_grid_view(){
+        return (ViewGroup) findViewById(get_main_view_id());
     }
 
     private void setup(){
@@ -121,5 +116,13 @@ public class DynamicSoundBoard extends AppCompatActivity {
 
     private void setup_display(){
         Log.d(TAG,"setup_display()");
+        ArrayList<SoundBoard> sound_boards = sound_board_manager.get_sound_boards();
+
+        EnvironmentVariables.get_main_view().setLayoutParams()
+        for(SoundBoard this_sound_board : sound_boards){
+            GridView load_me = new GridView(EnvironmentVariables.get_app_context());
+            load_me.setAdapter(this_sound_board);
+            EnvironmentVariables.get_main_view().addView(load_me);
+        }
     }
 }

@@ -14,4 +14,8 @@ public class SoundBoardManager {
             sound_boards.add(new SoundBoard(sound_board_folders.get(key)));
         }
     }
+
+    public ArrayList<SoundBoard> get_sound_boards(){
+        return sound_boards;
+    }
 }

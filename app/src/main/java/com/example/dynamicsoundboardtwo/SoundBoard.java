@@ -22,7 +22,7 @@ public class SoundBoard extends ArrayAdapter {
     private static final String TAG = "SoundBoard";
     ArrayList<SoundBoardButton> sound_board_buttons;
     SoundBoard(HashMap<String,File> sound_board_folder){
-        super(EnvironmentVariables.get_app_context(), EnvironmentVariables.get_main_context_id());
+        super(EnvironmentVariables.get_app_context(), EnvironmentVariables.get_main_view_id());
         sound_board_buttons = new ArrayList<>();
         Log.d(TAG,"Processing sound board folder!");
         File configuration_file = get_configuration_file_from_directory(sound_board_folder);
