@@ -1,14 +1,11 @@
 package com.example.dynamicsoundboardtwo;
 
-import android.content.Context;
-
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
 import android.view.ViewGroup;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.File;
@@ -33,28 +30,28 @@ public class DynamicSoundBoard extends AppCompatActivity {
         setup();
     }
 
-    private void test_print(){
-        TextView greeting = findViewById(R.id.greeting);
-        greeting.append("And where does the newborn go from here? The net is vast and infinite.");
-    }
+//    private void test_print(){
+//        TextView greeting = findViewById(R.id.greeting);
+//        greeting.append("And where does the newborn go from here? The net is vast and infinite.");
+//    }
 
     private void set_environment_variables(){
         EnvironmentVariables.set_app_context(getApplicationContext());
         int main_view_id = get_main_view_id();
         EnvironmentVariables.set_main_view_id(main_view_id);
-        EnvironmentVariables.set_main_view(get_main_grid_view());
+        EnvironmentVariables.set_main_view(get_main_view());
     }
 
     private int get_main_view_id(){
         return R.id.main_context;
     }
 
-    private ViewGroup get_main_grid_view(){
-        return (ViewGroup) findViewById(get_main_view_id());
+    private ViewGroup get_main_view(){
+        return findViewById(get_main_view_id());
     }
 
     private void setup(){
-        test_print();
+//        test_print();
         HashMap<String,HashMap<String,File>> sound_board_folders = setup_sound_board_folders(EnvironmentVariables.get_app_context().getExternalFilesDirs(null));
         setup_sound_boards(sound_board_folders);
         setup_display();
@@ -118,7 +115,6 @@ public class DynamicSoundBoard extends AppCompatActivity {
         Log.d(TAG,"setup_display()");
         ArrayList<SoundBoard> sound_boards = sound_board_manager.get_sound_boards();
 
-        EnvironmentVariables.get_main_view().setLayoutParams()
         for(SoundBoard this_sound_board : sound_boards){
             GridView load_me = new GridView(EnvironmentVariables.get_app_context());
             load_me.setAdapter(this_sound_board);

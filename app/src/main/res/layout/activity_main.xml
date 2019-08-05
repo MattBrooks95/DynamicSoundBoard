@@ -5,14 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DynamicSoundBoard">
-    <TextView
+    <!--<TextView
         android:id="@+id/greeting"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="" />
-    <GridView
+        android:text="" />-->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/main_context"
-        ></GridView>
+        android:orientation="vertical"
+        ></LinearLayout>
 </android.support.constraint.ConstraintLayout>
