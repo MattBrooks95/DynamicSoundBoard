@@ -1,6 +1,9 @@
 package com.example.dynamicsoundboardtwo;
 
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,10 +17,12 @@ import static com.example.dynamicsoundboardtwo.Constants.*;
 import static com.example.dynamicsoundboardtwo.JavaHelpers.get_string_from_file;
 import static com.example.dynamicsoundboardtwo.JavaHelpers.build_map_of_directory;
 
-public class SoundBoard {
+//extends list adapter so that this class can be used to populate a grid view element
+public class SoundBoard extends ArrayAdapter {
     private static final String TAG = "SoundBoard";
     ArrayList<SoundBoardButton> sound_board_buttons;
     SoundBoard(HashMap<String,File> sound_board_folder){
+        super(EnvironmentVariables.get_app_context(), EnvironmentVariables.get_main_context_id());
         sound_board_buttons = new ArrayList<>();
         Log.d(TAG,"Processing sound board folder!");
         File configuration_file = get_configuration_file_from_directory(sound_board_folder);
@@ -55,6 +60,15 @@ public class SoundBoard {
         }
     }
 
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent){
+        return sound_board_buttons.get(position).get_button();
+    }
+
+    @Override
+    public int getCount(){
+        return sound_board_buttons.size();
+    }
 
     private File get_configuration_file_from_directory(HashMap<String,File> sound_board_folder){
         return sound_board_folder.get(MAP_FILE_NAME);
@@ -67,5 +81,4 @@ public class SoundBoard {
     private File get_images_directory_from_directory(HashMap<String,File> sound_board_folder){
         return sound_board_folder.get(IMAGE_DIR_NAME);
     }
-
 }
