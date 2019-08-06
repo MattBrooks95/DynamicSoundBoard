@@ -4,9 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import android.view.ViewGroup;
+import android.view.View;
 import android.widget.GridView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class DynamicSoundBoard extends AppCompatActivity {
         return R.id.main_context;
     }
 
-    private ViewGroup get_main_view(){
+    private LinearLayout get_main_view(){
         return findViewById(get_main_view_id());
     }
 
@@ -112,13 +112,22 @@ public class DynamicSoundBoard extends AppCompatActivity {
 //    }
 
     private void setup_display(){
+        display_manager = new DisplayManager();
         Log.d(TAG,"setup_display()");
         ArrayList<SoundBoard> sound_boards = sound_board_manager.get_sound_boards();
 
+        boolean is_first_sound_board = true;
+
         for(SoundBoard this_sound_board : sound_boards){
-            GridView load_me = new GridView(EnvironmentVariables.get_app_context());
+            GridView load_me = this_sound_board.create_grid_view();
+            load_me.setNumColumns(6);
             load_me.setAdapter(this_sound_board);
-            EnvironmentVariables.get_main_view().addView(load_me);
+            if(!is_first_sound_board){
+                load_me.setVisibility(View.INVISIBLE);
+            } else {
+                is_first_sound_board = false;
+            }
+            display_manager.get_sound_boards_container().addView(load_me);
         }
     }
 }

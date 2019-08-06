@@ -4,6 +4,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridLayout;
+import android.widget.GridView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,9 +22,11 @@ import static com.example.dynamicsoundboardtwo.JavaHelpers.build_map_of_director
 //extends list adapter so that this class can be used to populate a grid view element
 public class SoundBoard extends ArrayAdapter {
     private static final String TAG = "SoundBoard";
+    SoundBoardConfiguration configuration;
     ArrayList<SoundBoardButton> sound_board_buttons;
     SoundBoard(HashMap<String,File> sound_board_folder){
         super(EnvironmentVariables.get_app_context(), EnvironmentVariables.get_main_view_id());
+        configuration = new SoundBoardConfiguration();
         sound_board_buttons = new ArrayList<>();
         Log.d(TAG,"Processing sound board folder!");
         File configuration_file = get_configuration_file_from_directory(sound_board_folder);
@@ -68,6 +72,16 @@ public class SoundBoard extends ArrayAdapter {
     @Override
     public int getCount(){
         return sound_board_buttons.size();
+    }
+
+    public GridView create_grid_view(){
+        GridView return_me = new GridView(EnvironmentVariables.get_app_context());
+        return_me.setNumColumns(configuration.get_number_of_columns());
+        return_me.setColumnWidth(configuration.get_column_width());
+        return_me.setVerticalSpacing(configuration.get_vertical_spacing());
+        //center, fill container
+        return_me.setGravity(11|77);
+        return return_me;
     }
 
     private File get_configuration_file_from_directory(HashMap<String,File> sound_board_folder){
