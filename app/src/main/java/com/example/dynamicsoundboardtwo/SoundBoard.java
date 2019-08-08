@@ -21,17 +21,28 @@ import static com.example.dynamicsoundboardtwo.JavaHelpers.build_map_of_director
 //extends list adapter so that this class can be used to populate a grid view element
 public class SoundBoard extends ArrayAdapter {
     private static final String TAG = "SoundBoard";
+    private GridView my_grid_view   = null;
+
+    private SquareButton sound_board_select_button = null;
+
     SoundBoardConfiguration configuration;
     ArrayList<SoundBoardButton> sound_board_buttons;
+
     SoundBoard(HashMap<String,File> sound_board_folder){
         super(EnvironmentVariables.get_app_context(), EnvironmentVariables.get_main_view_id());
-        configuration = new SoundBoardConfiguration();
+        configuration       = new SoundBoardConfiguration();
         sound_board_buttons = new ArrayList<>();
         Log.d(TAG,"Processing sound board folder!");
         File configuration_file = get_configuration_file_from_directory(sound_board_folder);
         HashMap<String,File> audio_directory    = build_map_of_directory(get_audio_directory_from_directory(sound_board_folder));
         HashMap<String,File> images_directory   = build_map_of_directory(get_images_directory_from_directory(sound_board_folder));
         process_configuration_file(configuration_file, audio_directory, images_directory);
+        sound_board_select_button = new SquareButton(EnvironmentVariables.get_app_context());
+        sound_board_select_button.setBackground(sound_board_buttons.get(0).get_button_background_drawable());
+    }
+
+    public SquareButton get_selector_button(){
+        return sound_board_select_button;
     }
 
     private void process_configuration_file(File configuration_file,HashMap<String,File> audio_directory,HashMap<String,File> images_directory){
@@ -63,6 +74,10 @@ public class SoundBoard extends ArrayAdapter {
         }
     }
 
+    public int size(){
+        return sound_board_buttons.size();
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         return sound_board_buttons.get(position).get_button();
@@ -74,14 +89,42 @@ public class SoundBoard extends ArrayAdapter {
     }
 
     public GridView create_grid_view(){
-        GridView return_me = new GridView(EnvironmentVariables.get_app_context());
-        return_me.setNumColumns(configuration.get_number_of_columns());
-        return_me.setColumnWidth(configuration.get_column_width());
-        return_me.setVerticalSpacing(configuration.get_vertical_spacing());
-        return_me.setHorizontalSpacing(configuration.get_horizontal_spacing());
+        if(my_grid_view != null){
+            return get_grid_view();
+        }
+
+        my_grid_view = new GridView(EnvironmentVariables.get_app_context());
         //center, fill container
-        return_me.setGravity(11|77);
-        return return_me;
+        set_grid_view_parameters_from_config_object(my_grid_view,configuration);
+        my_grid_view.setGravity(11|77);
+        return my_grid_view;
+    }
+
+    public GridView get_grid_view(){
+        return my_grid_view;
+    }
+
+    public void set_invisible(){
+        set_visibility(View.INVISIBLE);
+    }
+
+    public void set_visible(){
+        set_visibility(View.VISIBLE);
+    }
+
+    public SquareButton get_sound_board_selector_button(){
+        return sound_board_select_button;
+    }
+
+    private void set_visibility(int visibility){
+        my_grid_view.setVisibility(visibility);
+    }
+
+    private void set_grid_view_parameters_from_config_object(GridView grid, SoundBoardConfiguration parameters){
+        grid.setNumColumns(parameters.get_number_of_columns());
+        grid.setColumnWidth(parameters.get_column_width());
+        grid.setVerticalSpacing(parameters.get_vertical_spacing());
+        grid.setHorizontalSpacing(parameters.get_horizontal_spacing());
     }
 
     private File get_configuration_file_from_directory(HashMap<String,File> sound_board_folder){

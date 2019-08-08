@@ -116,18 +116,26 @@ public class DynamicSoundBoard extends AppCompatActivity {
         Log.d(TAG,"setup_display()");
         ArrayList<SoundBoard> sound_boards = sound_board_manager.get_sound_boards();
 
+        //I want this passed by reference, in c I could do this in a better way...
         boolean is_first_sound_board = true;
 
         for(SoundBoard this_sound_board : sound_boards){
-            GridView load_me = this_sound_board.create_grid_view();
-            load_me.setNumColumns(6);
-            load_me.setAdapter(this_sound_board);
+            Log.d(TAG,"Processing sound board! Number of buttons:"+this_sound_board.size());
+            GridView loaded_gridview = setup_gridview_element(this_sound_board);
             if(!is_first_sound_board){
-                load_me.setVisibility(View.INVISIBLE);
+                loaded_gridview.setVisibility(View.INVISIBLE);
             } else {
                 is_first_sound_board = false;
             }
-            display_manager.get_sound_boards_container().addView(load_me);
         }
+//        display_manager.next_sound_board(sound_boards);
+    }
+
+    private GridView setup_gridview_element(SoundBoard this_sound_board){
+        GridView load_me = this_sound_board.create_grid_view();
+        load_me.setNumColumns(6);
+        load_me.setAdapter(this_sound_board);
+        display_manager.get_sound_boards_container().addView(load_me);
+        return load_me;
     }
 }

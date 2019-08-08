@@ -19,10 +19,11 @@ import static com.example.dynamicsoundboardtwo.JavaHelpers.join_string_array;
 public class SoundBoardButton {
     private static final String TAG = "SoundBoardButton";
 
-//    private Button sound_button = null;
     private SquareButton sound_button = null;
 
     private MediaPlayer sound = null;
+
+    private Drawable button_background_drawable = null;
 
     SoundBoardButton(File image, File audio){
         constructor_work(image,audio,"none");
@@ -41,8 +42,13 @@ public class SoundBoardButton {
         setup_onclick();
     }
 
+    public Drawable get_button_background_drawable(){
+        return button_background_drawable;
+    }
+
     private void setup_background(File image){
-        sound_button.setBackground(Drawable.createFromPath(image.getPath()));
+        button_background_drawable = Drawable.createFromPath(image.getPath());
+        sound_button.setBackground(button_background_drawable);
     }
 
     private void setup_audio(){
