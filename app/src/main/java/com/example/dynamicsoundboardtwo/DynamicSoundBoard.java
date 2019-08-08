@@ -121,17 +121,17 @@ public class DynamicSoundBoard extends AppCompatActivity {
 
         for(SoundBoard this_sound_board : sound_boards){
             Log.d(TAG,"Processing sound board! Number of buttons:"+this_sound_board.size());
-            GridView loaded_gridview = setup_gridview_element(this_sound_board);
+            GridView loaded_gridview = setup_grid_view_element(this_sound_board);
             if(!is_first_sound_board){
                 loaded_gridview.setVisibility(View.INVISIBLE);
             } else {
                 is_first_sound_board = false;
             }
+            display_manager.get_sound_board_select_list_container().addView(this_sound_board.get_selector_button());
         }
-//        display_manager.next_sound_board(sound_boards);
     }
 
-    private GridView setup_gridview_element(SoundBoard this_sound_board){
+    private GridView setup_grid_view_element(SoundBoard this_sound_board){
         GridView load_me = this_sound_board.create_grid_view();
         load_me.setNumColumns(6);
         load_me.setAdapter(this_sound_board);
