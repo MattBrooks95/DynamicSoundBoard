@@ -19,7 +19,8 @@ import static com.example.dynamicsoundboardtwo.JavaHelpers.join_string_array;
 public class SoundBoardButton {
     private static final String TAG = "SoundBoardButton";
 
-    private Button sound_button = null;
+//    private Button sound_button = null;
+    private SquareButton sound_button = null;
 
     private MediaPlayer sound = null;
 
@@ -34,7 +35,7 @@ public class SoundBoardButton {
     private void constructor_work(File image, File audio, String label){
         ArrayList<String> paths = new ArrayList<>(Arrays.asList(image.getPath(),audio.getPath(), label));
         Log.d(TAG,"Initializing sound board button:(" + join_string_array(paths,':') + ")");
-        sound_button = new Button(EnvironmentVariables.get_app_context());
+        sound_button = new SquareButton(EnvironmentVariables.get_app_context());
         setup_background(image);
         setup_audio();
         setup_onclick();

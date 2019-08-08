@@ -4,7 +4,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.GridLayout;
 import android.widget.GridView;
 
 import org.json.JSONArray;
@@ -79,6 +78,7 @@ public class SoundBoard extends ArrayAdapter {
         return_me.setNumColumns(configuration.get_number_of_columns());
         return_me.setColumnWidth(configuration.get_column_width());
         return_me.setVerticalSpacing(configuration.get_vertical_spacing());
+        return_me.setHorizontalSpacing(configuration.get_horizontal_spacing());
         //center, fill container
         return_me.setGravity(11|77);
         return return_me;
