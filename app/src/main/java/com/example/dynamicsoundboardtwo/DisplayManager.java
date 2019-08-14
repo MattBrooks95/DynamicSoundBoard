@@ -1,5 +1,6 @@
 package com.example.dynamicsoundboardtwo;
 
+import android.graphics.Color;
 import android.widget.LinearLayout;
 
 public class DisplayManager {

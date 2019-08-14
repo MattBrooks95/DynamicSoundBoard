@@ -24,7 +24,7 @@ public class SoundBoardManager {
 
         for(String key : sound_board_folders.keySet()){
             Log.d(TAG,"processing sound board folder:" + key);
-            SoundBoard new_soundboard = new SoundBoard(sound_board_folders.get(key));
+            SoundBoard new_soundboard = new SoundBoard(sound_board_folders.get(key), count, this);
             sound_boards.add(new_soundboard);
             //use count to set the button's callback to set the currently displayed sound board
             //to the index stored within the button

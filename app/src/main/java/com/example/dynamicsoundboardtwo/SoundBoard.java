@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,15 +25,14 @@ public class SoundBoard extends ArrayAdapter {
     private static final String TAG = "SoundBoard";
     private GridView my_grid_view   = null;
 
-    private int my_view_id = -1;
-    private int sound_board_selector_button_id = -1;
+    private int sound_board_index = -1;
 
     private Button sound_board_select_button = null;
 
     SoundBoardConfiguration configuration;
     ArrayList<SoundBoardButton> sound_board_buttons;
 
-    SoundBoard(HashMap<String,File> sound_board_folder){
+    SoundBoard(HashMap<String,File> sound_board_folder, int sound_board_index_in, SoundBoardManager sound_board_manager_reference){
         super(EnvironmentVariables.get_app_context(), EnvironmentVariables.get_main_view_id());
         configuration       = new SoundBoardConfiguration();
         sound_board_buttons = new ArrayList<>();
@@ -43,24 +41,15 @@ public class SoundBoard extends ArrayAdapter {
         HashMap<String,File> audio_directory    = build_map_of_directory(get_audio_directory_from_directory(sound_board_folder));
         HashMap<String,File> images_directory   = build_map_of_directory(get_images_directory_from_directory(sound_board_folder));
         process_configuration_file(configuration_file, audio_directory, images_directory);
-        set_up_selector_button();
+        sound_board_index = sound_board_index_in;
+        set_up_selector_button(sound_board_index, sound_board_manager_reference);
     }
 
     //this is bad, the image to use as the selector for this sound board
     //should be specified in the json config file
-    public void set_up_selector_button(){
-        sound_board_select_button = new Button(EnvironmentVariables.get_app_context());
-        sound_board_select_button.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View me){
-                Log.d(TAG,"clicked selector button!");
-                me.setVisibility(View.INVISIBLE);
-            }
-        });
-
-        sound_board_select_button.setBackground(sound_board_buttons.get(0).get_fresh_drawable_of_image());
-        ViewGroup.MarginLayoutParams layout_params = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        layout_params.setMargins(0,0,5,0);
-        sound_board_select_button.setLayoutParams(layout_params);
+    public void set_up_selector_button(int corresponding_sound_board_index, SoundBoardManager sound_board_manager_reference){
+        Drawable selector_background = sound_board_buttons.get(0).get_fresh_drawable_of_image();
+        sound_board_select_button = new SoundBoardSelectorButton(EnvironmentVariables.get_app_context(),corresponding_sound_board_index,sound_board_manager_reference,selector_background);
     }
 
     public SoundBoardButton get_button(int button_index){
@@ -91,7 +80,6 @@ public class SoundBoard extends ArrayAdapter {
                 File audio_file = audio_directory.get(audio_name);
                 sound_board_buttons.add(new SoundBoardButton(image_file, audio_file, label));
             }
-
         } catch(JSONException json_error){
             Log.d(TAG,"Some sort of JSON error, file contents were:");
             return;
@@ -114,10 +102,6 @@ public class SoundBoard extends ArrayAdapter {
         return sound_board_buttons.size();
     }
 
-    public int get_my_view_id(){
-        return my_view_id;
-    }
-
     public GridView create_grid_view(){
         if(my_grid_view != null){
             return get_grid_view();
@@ -134,17 +118,13 @@ public class SoundBoard extends ArrayAdapter {
     }
 
     public void add_grid_view_to_element(ViewGroup add_target){
-        my_view_id = View.generateViewId();
         if(my_grid_view == null){
             create_grid_view();
         }
-        my_grid_view.setId(my_view_id);
         add_target.addView(my_grid_view);
     }
 
     public void add_sound_board_selector_button_to_element(ViewGroup add_target){
-        sound_board_selector_button_id = View.generateViewId();
-        sound_board_select_button.setId(sound_board_selector_button_id);
         add_target.addView(sound_board_select_button);
     }
 
@@ -153,18 +133,10 @@ public class SoundBoard extends ArrayAdapter {
     }
 
     public void set_invisible(){
-//        set_visibility(View.INVISIBLE);
-        GridView my_grid_view = find_my_gridview();
-        my_grid_view.setVisibility(View.INVISIBLE);
-    }
-
-    public GridView find_my_gridview(){
-        View main_view = EnvironmentVariables.get_main_view();
-        return main_view.findViewById(my_view_id);
+        my_grid_view.setVisibility(View.GONE);
     }
 
     public void set_visible(){
-        GridView my_grid_view = find_my_gridview();
         my_grid_view.setVisibility(View.VISIBLE);
     }
 
