@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 
@@ -120,22 +121,20 @@ public class DynamicSoundBoard extends AppCompatActivity {
         boolean is_first_sound_board = true;
 
         for(SoundBoard this_sound_board : sound_boards){
-            Log.d(TAG,"Processing sound board! Number of buttons:"+this_sound_board.size());
-            GridView loaded_gridview = setup_grid_view_element(this_sound_board);
+            Log.d(TAG,"Processing sound board! Number of buttons:" + this_sound_board.size());
+            setup_grid_view_element(this_sound_board);
             if(!is_first_sound_board){
-                loaded_gridview.setVisibility(View.INVISIBLE);
+                this_sound_board.set_invisible();
             } else {
                 is_first_sound_board = false;
             }
-            display_manager.get_sound_board_select_list_container().addView(this_sound_board.get_selector_button());
+            this_sound_board.add_sound_board_selector_button_to_element(display_manager.get_sound_board_select_list_container());
         }
     }
 
-    private GridView setup_grid_view_element(SoundBoard this_sound_board){
-        GridView load_me = this_sound_board.create_grid_view();
-        load_me.setNumColumns(6);
-        load_me.setAdapter(this_sound_board);
-        display_manager.get_sound_boards_container().addView(load_me);
-        return load_me;
+    private void setup_grid_view_element(SoundBoard this_sound_board){
+        this_sound_board.create_grid_view();
+        ViewGroup sound_boards_container = display_manager.get_sound_boards_container();
+        this_sound_board.add_grid_view_to_element(sound_boards_container);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.dynamicsoundboardtwo;
 
 import android.util.Log;
+import android.widget.Button;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -11,8 +12,8 @@ public class SoundBoardManager {
 
     private int currently_selected_sound_board_index = 0;
 
-    private ArrayList<SoundBoard> sound_boards                      = null;
-    private ArrayList<SquareButton> sound_board_select_list_buttons = null;
+    private ArrayList<SoundBoard> sound_boards                = null;
+    private ArrayList<Button> sound_board_select_list_buttons = null;
 
     SoundBoardManager(HashMap<String,HashMap<String,File>> sound_board_folders){
         sound_boards = new ArrayList<>();
@@ -22,12 +23,12 @@ public class SoundBoardManager {
         int count = 0;
 
         for(String key : sound_board_folders.keySet()){
+            Log.d(TAG,"processing sound board folder:" + key);
             SoundBoard new_soundboard = new SoundBoard(sound_board_folders.get(key));
             sound_boards.add(new_soundboard);
-            SquareButton selector_button = new_soundboard.get_selector_button();
             //use count to set the button's callback to set the currently displayed sound board
             //to the index stored within the button
-            sound_board_select_list_buttons.add(selector_button);
+            sound_board_select_list_buttons.add(new_soundboard.get_selector_button());
             ++count;
         }
     }

@@ -1,14 +1,10 @@
 package com.example.dynamicsoundboardtwo;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,6 +21,9 @@ public class SoundBoardButton {
 
     private Drawable button_background_drawable = null;
 
+    private File image_file = null;
+    private File audio_file = null;
+
     SoundBoardButton(File image, File audio){
         constructor_work(image,audio,"none");
     }
@@ -36,8 +35,10 @@ public class SoundBoardButton {
     private void constructor_work(File image, File audio, String label){
         ArrayList<String> paths = new ArrayList<>(Arrays.asList(image.getPath(),audio.getPath(), label));
         Log.d(TAG,"Initializing sound board button:(" + join_string_array(paths,':') + ")");
+        image_file = image;
+        audio_file = audio;
         sound_button = new SquareButton(EnvironmentVariables.get_app_context());
-        setup_background(image);
+        setup_background();
         setup_audio();
         setup_onclick();
     }
@@ -46,10 +47,19 @@ public class SoundBoardButton {
         return button_background_drawable;
     }
 
-    private void setup_background(File image){
-        button_background_drawable = Drawable.createFromPath(image.getPath());
+    private void setup_background(){
+        button_background_drawable = get_fresh_drawable_of_image();
         sound_button.setBackground(button_background_drawable);
     }
+
+    public Drawable get_fresh_drawable_of_image(){
+        return Drawable.createFromPath(image_file.getPath());
+    }
+
+    public void setBackground(Drawable new_background){
+        sound_button.setBackground(new_background);
+    }
+
 
     private void setup_audio(){
         Log.d(TAG,"Setting up audio for sound board button");

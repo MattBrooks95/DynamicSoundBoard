@@ -1,7 +1,6 @@
 package com.example.dynamicsoundboardtwo;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatButton;
 
 //this class reports it's height to be it's width, so that the column width
 //from a grid view is used to set the height to be the same, so the buttons look square
