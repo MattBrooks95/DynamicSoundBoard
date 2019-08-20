@@ -2,6 +2,7 @@ package com.example.dynamicsoundboardtwo;
 
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,8 @@ public class SoundBoardButton {
 
     private Drawable button_background_drawable = null;
 
+    private boolean currently_playing = false;
+
     private File image_file = null;
     private File audio_file = null;
 
@@ -37,14 +40,33 @@ public class SoundBoardButton {
         Log.d(TAG,"Initializing sound board button:(" + join_string_array(paths,':') + ")");
         image_file = image;
         audio_file = audio;
+        currently_playing = false;
+
         sound_button = new SquareButton(EnvironmentVariables.get_app_context());
+
+        initialize_media_player();
+
+        setup_on_prepared_listener();
         setup_background();
-        setup_audio();
         setup_onclick();
     }
 
     public Drawable get_button_background_drawable(){
         return button_background_drawable;
+    }
+
+    private void initialize_media_player(){
+        sound = new MediaPlayer();
+        set_data_source();
+    }
+
+    private void setup_on_prepared_listener(){
+        sound.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
+            public void onPrepared(MediaPlayer media_player_reference){
+                go_to_playing_state();
+                media_player_reference.start();
+            }
+        });
     }
 
     private void setup_background(){
@@ -60,43 +82,73 @@ public class SoundBoardButton {
         sound_button.setBackground(new_background);
     }
 
+    private void go_to_playing_state(){
+        currently_playing = true;
+    }
 
-    private void setup_audio(){
+    private void go_to_not_playing_state(){
+        currently_playing = false;
+    }
+
+    private boolean setup_audio(){
         Log.d(TAG,"Setting up audio for sound board button");
-//        Resources application_resources = application_environment.getResources();
-//        int audio_resource_id = application_resources.getIdentifier(audio_name,"raw",application_environment.getPackageName());
-//
-//        //convenience method, will get better performance by doing prepareAsync and setDataSource
-//        sound = MediaPlayer.create(application_environment, audio_resource_id);
+
+        boolean file_exists = audio_file.exists();
+        boolean is_file     = audio_file.isFile();
+
+        return file_exists && is_file;
+    }
+
+    private void release(){
+        sound.stop();
     }
 
     private void setup_onclick(){
+        Log.d(TAG,"setting up the onclick method of the sound board button!");
         sound_button.setOnClickListener(new View.OnClickListener(){
+            @Override
             public void onClick(View me){
                 Log.d(TAG, "button clicked");
 
-                //this solution needs to be done this way, else app will hang until
-                //the audio is loaded
-                //will want to asynchronously prep this, then set a bool when its ready
-//                if(!sound_prepared){
-//                    Log.d(TAG,"Media player isn't prepared yet!");
-//                    return;
-//                }
+                if(currently_playing){
+                    sound.stop();
+                    go_to_not_playing_state();
+                    return;
+                }
 
-                // this keeps each sound that has been played once in memory forever, not ideal
-//                if(sound.isPlaying()){
-////                    sound.stop();
-//                    sound.pause();
-//                    sound.seekTo(0);
-////                    sound.prepare();
-//                } else {
-//                    sound.start();
-//                }
+                if(!setup_audio()){
+                    Log.d(TAG, "Audio couldn't be prepared!");
+                    return;
+                }
+
+                set_up_on_completion_listener();
+                sound.prepareAsync();
             }
         });
     }
 
-    //create a button with the specified image, and an onclick/ontap listener that plays the audio
+    private void set_up_on_completion_listener(){
+        sound.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
+            @Override
+            public void onCompletion(MediaPlayer mp){
+                release();
+                go_to_not_playing_state();
+            }
+        });
+
+    }
+
+    private boolean set_data_source(){
+        try{
+            sound.setDataSource(audio_file.getAbsolutePath());
+        } catch(java.io.IOException file_exception){
+            Log.d(TAG, "Set data source exception!");
+            return false;
+        }
+
+        return true;
+    }
+
     public Button get_button(){
         return sound_button;
     }
