@@ -29,11 +29,6 @@ public class DynamicSoundBoard extends AppCompatActivity {
         setup();
     }
 
-//    private void test_print(){
-//        TextView greeting = findViewById(R.id.greeting);
-//        greeting.append("And where does the newborn go from here? The net is vast and infinite.");
-//    }
-
     private void set_environment_variables(){
         EnvironmentVariables.set_app_context(getApplicationContext());
         int main_view_id = get_main_view_id();
@@ -50,7 +45,6 @@ public class DynamicSoundBoard extends AppCompatActivity {
     }
 
     private void setup(){
-//        test_print();
         HashMap<String,HashMap<String,File>> sound_board_folders = setup_sound_board_folders(EnvironmentVariables.get_app_context().getExternalFilesDirs(null));
         setup_sound_boards(sound_board_folders);
         setup_display();
