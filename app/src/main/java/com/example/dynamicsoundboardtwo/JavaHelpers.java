@@ -2,6 +2,9 @@ package com.example.dynamicsoundboardtwo;
 
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -67,7 +70,26 @@ public class JavaHelpers {
         return return_string.toString();
     }
 
-    public boolean message_if_null(Object some_object, String message){
+    public static JSONObject get_file_as_json(File json_file){
+        JSONObject file_as_json_object = null;
+
+        try {
+            String file_contents = get_string_from_file(json_file);
+            Log.d(TAG,"File contents:" + file_contents);
+            file_as_json_object = new JSONObject(file_contents);
+
+        } catch(JSONException json_error){
+            Log.d(TAG,"Some sort of JSON error, file path:" + json_file.getAbsolutePath());
+            return file_as_json_object;
+        } catch(java.io.FileNotFoundException file_not_found){
+            Log.d(TAG,"File:" + json_file.getPath() + " was not found!");
+            return file_as_json_object;
+        }
+
+        return file_as_json_object;
+    }
+
+    public static boolean message_if_null(Object some_object, String message){
         if(some_object == null) {
             Log.d(TAG, "Null object! Message:" + message);
             return true;

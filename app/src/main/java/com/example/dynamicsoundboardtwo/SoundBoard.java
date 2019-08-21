@@ -64,12 +64,19 @@ public class SoundBoard extends ArrayAdapter {
         JSONObject configuration_json = null;
 
         try{
-            String file_contents = get_string_from_file(configuration_file);
-            Log.d(TAG,"File contents:" + file_contents);
-            configuration_json = new JSONObject(file_contents);
+            configuration_json = JavaHelpers.get_file_as_json(configuration_file);
 
             JSONArray buttons_array = configuration_json.getJSONArray("buttons");
 
+            create_sound_board_buttons(buttons_array,audio_directory,images_directory);
+        } catch(JSONException json_error){
+            Log.d(TAG,"Some sort of JSON error, file contents were:");
+            return;
+        }
+    }
+
+    private void create_sound_board_buttons(JSONArray buttons_array,HashMap<String,File> audio_directory,HashMap<String,File> images_directory){
+        try{
             for(int button_index = 0; button_index < buttons_array.length(); ++button_index){
                 JSONObject button_hash = buttons_array.getJSONObject(button_index);
                 String image_name = button_hash.optString("pic");
@@ -80,11 +87,8 @@ public class SoundBoard extends ArrayAdapter {
                 File audio_file = audio_directory.get(audio_name);
                 sound_board_buttons.add(new SoundBoardButton(image_file, audio_file, label));
             }
-        } catch(JSONException json_error){
-            Log.d(TAG,"Some sort of JSON error, file contents were:");
-            return;
-        } catch(java.io.FileNotFoundException file_not_found){
-            Log.d(TAG,"File:" + configuration_file.getPath() + " was not found!");
+        } catch(org.json.JSONException error){
+            Log.d(TAG,"Json exception while creating sound board buttons!");
         }
     }
 
