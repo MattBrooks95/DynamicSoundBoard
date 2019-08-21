@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.example.dynamicsoundboardtwo.Constants.*;
-import static com.example.dynamicsoundboardtwo.JavaHelpers.get_string_from_file;
 import static com.example.dynamicsoundboardtwo.JavaHelpers.build_map_of_directory;
 
 //extends list adapter so that this class can be used to populate a grid view element
@@ -38,9 +37,11 @@ public class SoundBoard extends ArrayAdapter {
         sound_board_buttons = new ArrayList<>();
         Log.d(TAG,"Processing sound board folder!");
         File configuration_file = get_configuration_file_from_directory(sound_board_folder);
-        HashMap<String,File> audio_directory    = build_map_of_directory(get_audio_directory_from_directory(sound_board_folder));
-        HashMap<String,File> images_directory   = build_map_of_directory(get_images_directory_from_directory(sound_board_folder));
-        process_configuration_file(configuration_file, audio_directory, images_directory);
+        HashMap<String,File> audio_directory             = build_map_of_directory(get_audio_directory_from_directory(sound_board_folder));
+        HashMap<String,File> images_directory            = build_map_of_directory(get_images_directory_from_directory(sound_board_folder));
+        HashMap<String,File> background_images_directory = build_map_of_directory(get_background_directory_from_directory(sound_board_folder));
+        process_configuration_file(configuration_file, sound_board_folder);//rework this to pass in the whole directory's map
+//        process_configuration_file(configuration_file, audio_directory, images_directory, background_images_directory);
         sound_board_index = sound_board_index_in;
         set_up_selector_button(sound_board_index, sound_board_manager_reference);
     }
@@ -60,19 +61,46 @@ public class SoundBoard extends ArrayAdapter {
         return sound_board_select_button;
     }
 
-    private void process_configuration_file(File configuration_file,HashMap<String,File> audio_directory,HashMap<String,File> images_directory){
+    private void process_configuration_file(File configuration_file,HashMap<String,File> audio_directory,HashMap<String,File> images_directory,HashMap<String,File> backgrounds_directory){
         JSONObject configuration_json = null;
 
         try{
             configuration_json = JavaHelpers.get_file_as_json(configuration_file);
 
-            JSONArray buttons_array = configuration_json.getJSONArray("buttons");
+            process_sound_board_configurations(configuration_json, sound_board_);
 
+            JSONArray buttons_array = configuration_json.getJSONArray("buttons");
             create_sound_board_buttons(buttons_array,audio_directory,images_directory);
         } catch(JSONException json_error){
-            Log.d(TAG,"Some sort of JSON error, file contents were:");
+            Log.d(TAG,"Some sort of JSON error");
             return;
         }
+    }
+
+    private void process_sound_board_configurations(JSONObject configuration_json){
+        try{
+            JSONObject configurations = configuration_json.getJSONObject("sound_board_configuration");
+
+            String background_image_name = configurations.getString("background_image.jpg");
+
+            if(background_image_name == "random"){
+                setup_sound_board_background_image(background_image_name);
+            } else {
+                setup_random_sound_board_background();
+            }
+
+        } catch(JSONException json_error){
+            Log.d(TAG,"Some sort of JSON error");
+            return;
+        }
+    }
+
+    private void setup_random_sound_board_background(){
+
+    }
+
+    private void setup_sound_board_background_image(String background_image_name){
+
     }
 
     private void create_sound_board_buttons(JSONArray buttons_array,HashMap<String,File> audio_directory,HashMap<String,File> images_directory){
@@ -169,5 +197,9 @@ public class SoundBoard extends ArrayAdapter {
 
     private File get_images_directory_from_directory(HashMap<String,File> sound_board_folder){
         return sound_board_folder.get(IMAGE_DIR_NAME);
+    }
+
+    private File get_background_directory_from_directory(HashMap<String,File> sound_board_folder){
+        return sound_board_folder.get(BACKGROUND_IMAGE_DIR_NAME);
     }
 }
