@@ -24,9 +24,15 @@ public class SoundBoard extends ArrayAdapter {
     private static final String TAG = "SoundBoard";
     private GridView my_grid_view   = null;
 
+    private static final String BACKGROUND_IMAGE_FILE_JSON_KEY = "background_image";
+
+    private static final String SOUND_BOARD_CONFIGURATION_JSON_KEY = "sound_board_configuration";
+
     private int sound_board_index = -1;
 
     private Button sound_board_select_button = null;
+
+    private File background_image_file = null;
 
     SoundBoardConfiguration configuration;
     ArrayList<SoundBoardButton> sound_board_buttons;
@@ -35,14 +41,12 @@ public class SoundBoard extends ArrayAdapter {
         super(EnvironmentVariables.get_app_context(), EnvironmentVariables.get_main_view_id());
         configuration       = new SoundBoardConfiguration();
         sound_board_buttons = new ArrayList<>();
+
         Log.d(TAG,"Processing sound board folder!");
-        File configuration_file = get_configuration_file_from_directory(sound_board_folder);
-        HashMap<String,File> audio_directory             = build_map_of_directory(get_audio_directory_from_directory(sound_board_folder));
-        HashMap<String,File> images_directory            = build_map_of_directory(get_images_directory_from_directory(sound_board_folder));
-        HashMap<String,File> background_images_directory = build_map_of_directory(get_background_directory_from_directory(sound_board_folder));
-        process_configuration_file(configuration_file, sound_board_folder);//rework this to pass in the whole directory's map
-//        process_configuration_file(configuration_file, audio_directory, images_directory, background_images_directory);
+        process_configuration_folder(sound_board_folder);
+
         sound_board_index = sound_board_index_in;
+
         set_up_selector_button(sound_board_index, sound_board_manager_reference);
     }
 
@@ -61,32 +65,39 @@ public class SoundBoard extends ArrayAdapter {
         return sound_board_select_button;
     }
 
-    private void process_configuration_file(File configuration_file,HashMap<String,File> audio_directory,HashMap<String,File> images_directory,HashMap<String,File> backgrounds_directory){
+    private void process_configuration_folder(HashMap<String,File> sound_board_folder){
+        File configuration_file = get_configuration_file_from_directory(sound_board_folder);
+
         JSONObject configuration_json = null;
+
+        File audio_directory  = get_audio_directory_from_directory(sound_board_folder);
+        File images_directory = get_images_directory_from_directory(sound_board_folder);
 
         try{
             configuration_json = JavaHelpers.get_file_as_json(configuration_file);
 
-            process_sound_board_configurations(configuration_json, sound_board_);
+            process_sound_board_configurations(configuration_json, build_map_of_directory(get_background_directory_from_directory(sound_board_folder)));
 
             JSONArray buttons_array = configuration_json.getJSONArray("buttons");
-            create_sound_board_buttons(buttons_array,audio_directory,images_directory);
+            create_sound_board_buttons(buttons_array,build_map_of_directory(audio_directory),build_map_of_directory(images_directory));
         } catch(JSONException json_error){
             Log.d(TAG,"Some sort of JSON error");
             return;
         }
     }
 
-    private void process_sound_board_configurations(JSONObject configuration_json){
+    private void process_sound_board_configurations(JSONObject configuration_json,HashMap<String,File> backgrounds_directory){
         try{
-            JSONObject configurations = configuration_json.getJSONObject("sound_board_configuration");
+            JSONObject configurations = configuration_json.getJSONObject(SOUND_BOARD_CONFIGURATION_JSON_KEY);
 
-            String background_image_name = configurations.getString("background_image.jpg");
+            String background_image_name = configurations.getString(BACKGROUND_IMAGE_FILE_JSON_KEY);
 
             if(background_image_name == "random"){
-                setup_sound_board_background_image(background_image_name);
+                setup_sound_board_background_image(background_image_name,backgrounds_directory);
+            } else if(background_image_name != null){
+                setup_random_sound_board_background(backgrounds_directory);
             } else {
-                setup_random_sound_board_background();
+                Log.d(TAG,"No background image specified in the config file!");
             }
 
         } catch(JSONException json_error){
@@ -95,12 +106,13 @@ public class SoundBoard extends ArrayAdapter {
         }
     }
 
-    private void setup_random_sound_board_background(){
+    private void setup_random_sound_board_background(HashMap<String,File> backgrounds_directory){
 
     }
 
-    private void setup_sound_board_background_image(String background_image_name){
-
+    private void setup_sound_board_background_image(String background_image_name, HashMap<String,File> backgrounds_directory){
+        background_image_file = backgrounds_directory.get(background_image_name);
+        my_grid_view.setBackground(Drawable.createFromPath(background_image_file.getAbsolutePath()));
     }
 
     private void create_sound_board_buttons(JSONArray buttons_array,HashMap<String,File> audio_directory,HashMap<String,File> images_directory){
