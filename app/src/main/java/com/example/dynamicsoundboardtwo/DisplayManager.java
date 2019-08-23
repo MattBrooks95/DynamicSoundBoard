@@ -24,7 +24,6 @@ public class DisplayManager {
         sound_boards_container = main_view.findViewById(get_sound_boards_container_id());
     }
 
-
     public LinearLayout get_sound_board_select_list_container(){
         return sound_board_select_list_container;
     }

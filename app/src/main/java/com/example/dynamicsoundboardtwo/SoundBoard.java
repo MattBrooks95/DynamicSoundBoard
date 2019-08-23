@@ -42,6 +42,8 @@ public class SoundBoard extends ArrayAdapter {
         configuration       = new SoundBoardConfiguration();
         sound_board_buttons = new ArrayList<>();
 
+        create_grid_view();
+
         Log.d(TAG,"Processing sound board folder!");
         process_configuration_folder(sound_board_folder);
 
@@ -93,9 +95,9 @@ public class SoundBoard extends ArrayAdapter {
             String background_image_name = configurations.getString(BACKGROUND_IMAGE_FILE_JSON_KEY);
 
             if(background_image_name == "random"){
-                setup_sound_board_background_image(background_image_name,backgrounds_directory);
-            } else if(background_image_name != null){
                 setup_random_sound_board_background(backgrounds_directory);
+            } else if(background_image_name != null){
+                setup_sound_board_background_image(background_image_name,backgrounds_directory);
             } else {
                 Log.d(TAG,"No background image specified in the config file!");
             }
@@ -112,7 +114,8 @@ public class SoundBoard extends ArrayAdapter {
 
     private void setup_sound_board_background_image(String background_image_name, HashMap<String,File> backgrounds_directory){
         background_image_file = backgrounds_directory.get(background_image_name);
-        my_grid_view.setBackground(Drawable.createFromPath(background_image_file.getAbsolutePath()));
+        Drawable background_drawable = Drawable.createFromPath(background_image_file.getAbsolutePath());
+        my_grid_view.setBackground(background_drawable);
     }
 
     private void create_sound_board_buttons(JSONArray buttons_array,HashMap<String,File> audio_directory,HashMap<String,File> images_directory){
@@ -154,11 +157,16 @@ public class SoundBoard extends ArrayAdapter {
         my_grid_view = new GridView(EnvironmentVariables.get_app_context());
         //center, fill container
         set_grid_view_parameters_from_config_object(my_grid_view,configuration);
+        set_up_grid_view_layout_parameters();
+        return my_grid_view;
+    }
+
+    private void set_up_grid_view_layout_parameters(){
+        ViewGroup.LayoutParams gridview_layout_parameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+        my_grid_view.setLayoutParams(gridview_layout_parameters);
         my_grid_view.setGravity(11|77);
         my_grid_view.setNumColumns(6);
         my_grid_view.setAdapter(this);
-
-        return my_grid_view;
     }
 
     public void add_grid_view_to_element(ViewGroup add_target){
