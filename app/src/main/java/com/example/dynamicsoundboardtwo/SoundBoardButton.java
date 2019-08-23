@@ -36,6 +36,10 @@ public class SoundBoardButton {
     }
 
     private void constructor_work(File image, File audio, String label){
+        if(image == null || audio == null){
+            Log.d(TAG,"Attempting to construct a sound board button with a null audio or video file!");
+            return;
+        }
         ArrayList<String> paths = new ArrayList<>(Arrays.asList(image.getPath(),audio.getPath(), label));
         Log.d(TAG,"Initializing sound board button:(" + join_string_array(paths,':') + ")");
         image_file = image;

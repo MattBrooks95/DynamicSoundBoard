@@ -118,6 +118,10 @@ public class SoundBoard extends ArrayAdapter {
         my_grid_view.setBackground(background_drawable);
     }
 
+    private String get_not_found_message(String map_key){
+        return new String("File: " + map_key + " not found in the sound board directory!");
+    }
+
     private void create_sound_board_buttons(JSONArray buttons_array,HashMap<String,File> audio_directory,HashMap<String,File> images_directory){
         try{
             for(int button_index = 0; button_index < buttons_array.length(); ++button_index){
@@ -128,6 +132,24 @@ public class SoundBoard extends ArrayAdapter {
 
                 File image_file = images_directory.get(image_name);
                 File audio_file = audio_directory.get(audio_name);
+
+                boolean file_is_missing = false;
+
+                if(image_file == null){
+                    Log.d(TAG,get_not_found_message(image_name));
+                    file_is_missing = true;
+                }
+
+                if(audio_file == null){
+                    Log.d(TAG,get_not_found_message(audio_name));
+                    file_is_missing = true;
+                }
+
+                //don't bother trying to construct the soundboard button if these crucial files are missing
+                if(file_is_missing){
+                    continue;
+                }
+
                 sound_board_buttons.add(new SoundBoardButton(image_file, audio_file, label));
             }
         } catch(org.json.JSONException error){
