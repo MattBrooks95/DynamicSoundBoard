@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-public class SoundBoardSelectorButton extends android.support.v7.widget.AppCompatButton {
+public class SoundBoardSelectorButton extends androidx.appcompat.widget.AppCompatImageButton {
     private int corresponding_sound_board_index;
     private SoundBoardManager sound_board_manager = null;
 

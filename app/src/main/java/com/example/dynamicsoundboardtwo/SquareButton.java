@@ -1,11 +1,12 @@
 package com.example.dynamicsoundboardtwo;
 
 import android.content.Context;
+import android.widget.ImageButton;
 
 //this class reports it's height to be it's width, so that the column width
 //from a grid view is used to set the height to be the same, so the buttons look square
 //this seems really hacky and not proper
-public class SquareButton extends android.support.v7.widget.AppCompatButton {
+public class SquareButton extends androidx.appcompat.widget.AppCompatImageButton {
     private int height = 0;
     SquareButton(Context context_in){
         super(context_in);

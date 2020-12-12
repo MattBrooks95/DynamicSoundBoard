@@ -30,7 +30,7 @@ public class SoundBoard extends ArrayAdapter {
 
     private int sound_board_index = -1;
 
-    private Button sound_board_select_button = null;
+    private SoundBoardSelectorButton sound_board_select_button = null;
 
     private File background_image_file = null;
 
@@ -63,7 +63,7 @@ public class SoundBoard extends ArrayAdapter {
         return sound_board_buttons.get(button_index);
     }
 
-    public Button get_selector_button(){
+    public SoundBoardSelectorButton get_selector_button(){
         return sound_board_select_button;
     }
 
@@ -214,7 +214,7 @@ public class SoundBoard extends ArrayAdapter {
         my_grid_view.setVisibility(View.VISIBLE);
     }
 
-    public Button get_sound_board_selector_button(){
+    public SoundBoardSelectorButton get_sound_board_selector_button(){
         return sound_board_select_button;
     }
 

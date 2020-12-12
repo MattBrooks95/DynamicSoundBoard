@@ -153,7 +153,7 @@ public class SoundBoardButton {
         return true;
     }
 
-    public Button get_button(){
+    public SquareButton get_button(){
         return sound_button;
     }
 }

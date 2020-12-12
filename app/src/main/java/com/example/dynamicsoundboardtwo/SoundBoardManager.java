@@ -13,7 +13,7 @@ public class SoundBoardManager {
     private int currently_selected_sound_board_index = 0;
 
     private ArrayList<SoundBoard> sound_boards                = null;
-    private ArrayList<Button> sound_board_select_list_buttons = null;
+    private ArrayList<SoundBoardSelectorButton> sound_board_select_list_buttons = null;
 
     SoundBoardManager(HashMap<String,HashMap<String,File>> sound_board_folders){
         sound_boards = new ArrayList<>();
