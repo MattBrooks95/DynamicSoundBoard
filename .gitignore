@@ -86,3 +86,7 @@ lint/tmp/
 
 # Android Profiling
 *.hprof
+
+###############
+#folder for storing example media files
+example_content
